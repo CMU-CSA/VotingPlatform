@@ -4,6 +4,12 @@ from django.contrib import admin
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'VotingPlatform.views.home', name='home'),
+    url(r'^voting/$', 'VotingPlatform.views.voting_page', name='voting_page'),
+    url(r'^vote/$', 'VotingPlatform.views.vote', name='vote'),
+    url(r'^manage/$', 'VotingPlatform.views.admin_page', name='manage'),
+    url(r'^remove/$', 'VotingPlatform.views.remove_candidate', name='remove'),
+    url(r'^add/$', 'VotingPlatform.views.add_candidate', name='add'),
+    url(r'^login/$', 'VotingPlatform.views.user_login', name='login'),
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),

@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Voting Page</title>
+</head>
+<body>
+  <h1>Please Vote</h1>
+  <div>
+    {% for candidate in candidates %}
+      <form action="{% url 'vote' %}" method="post">
+        <span style="font-size:20px">{{candidate.name}}</span>
+        <input type="hidden" name="name" value="{{candidate.name}}" />
+        <input type="submit" value="vote" />
+        <br />
+        <span>{{candidate.information}}</span>
+        {% csrf_token %}
+      </form>
+    {% endfor %}
+  </div>
+</body>
+</html>
