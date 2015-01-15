@@ -1,5 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse, Http404
+from mimetypes import guess_type
 from VotingPlatform.models import Candidate
+from VotingPlatform.forms import CandidateForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.db import transaction
@@ -25,7 +28,7 @@ def user_login(request):
     if not user_auth:
         return render(request, 'error.html')
     login(request, user_auth)
-    return redirect('/manage/')
+    return redirect(reverse('manage'))
 
 def voting_page(request):
     candidates = Candidate.objects.all()
@@ -34,7 +37,8 @@ def voting_page(request):
 @login_required
 def admin_page(request):
     candidates = Candidate.objects.all()
-    return render(request, 'admin.html', {"candidates":candidates})
+    context = {'form':CandidateForm(), 'candidates':candidates}
+    return render(request, 'admin.html', context)
 
 @login_required
 def add_candidate(request):
@@ -49,7 +53,12 @@ def add_candidate(request):
     except ObjectDoesNotExist:
         candidate = Candidate.objects.create(name = name, information = information)
         candidate.save()
-        return redirect('/manage/')
+        form = CandidateForm(request.POST, request.FILES, instance=candidate)
+        if not form.is_valid():
+            context = {'form':form}
+            return render(request, 'simple-address-book/add-entry.html', context)
+        form.save()
+        return redirect(reverse('manage'))
     
 @login_required
 def remove_candidate(request):
@@ -58,10 +67,18 @@ def remove_candidate(request):
     name = request.POST['name']
     try:
         candidate = Candidate.objects.get(name = name)
+        candidate.picture.delete()
         candidate.delete()
-        return redirect('/manage/')
+        return redirect(reverse('manage'))
     except ObjectDoesNotExist:
         return render(request, 'error.html')
+
+def get_photo(request, cid):
+    entry = get_object_or_404(Candidate, id=cid)
+    if not entry.picture:
+        raise Http404
+    content_type = guess_type(entry.picture.name)
+    return HttpResponse(entry.picture, content_type=content_type)
 
 @transaction.atomic
 def vote(request):
@@ -72,4 +89,4 @@ def vote(request):
     except ObjectDoesNotExist:
         return render(request, 'error.html')
     candidate.vote()
-    return redirect('/voting/')
+    return render(request, 'success.html')

@@ -9,20 +9,26 @@
   <div>
     {% for candidate in candidates %}
     <form action="{% url 'remove' %}" method="post">
-      <span style="font-size:20px">{{candidate.name}} -- {{candidate.votes}}</span>
-      <input type="hidden" name="name" value="{{candidate.name}}"/>
+      <span>Name: {{candidate.name}}</span>
       <input type="submit" value="remove" />
       <br />
-      <span>{{candidate.information}}</span>
+      <span>Votes: {{candidate.votes}}</span>
+      <br />
+      {% if candidate.picture.name %}
+      <img width="150px" src="{% url 'photo' candidate.id %}" alt="(image not available)">
+      <br />
+      {% endif %}
+      <span>Information: {{candidate.information}}</span>
+      <input type="hidden" name="name" value="{{candidate.name}}"/>
       {% csrf_token %}
     </form>
+    <br />
     {% endfor %}
   </div>
   <div>
-    <form action="{% url 'add' %}" method="post">
-      <span style="font-size:20px">Add candidate</span><br />
-      Name: <input type="text" name="name" /><br />
-      Information: <input type="text" name="information" /><br />
+    <h2>Add Candidate</h2>
+    <form enctype="multipart/form-data" action="{% url 'add' %}" method="post">
+      <table>{{form}}</table>
       <input type="submit" value="create" />
       {% csrf_token %}
     </form>
