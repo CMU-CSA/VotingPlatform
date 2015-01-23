@@ -9,3 +9,10 @@ class Candidate(models.Model):
     def vote(self):
         self.votes = self.votes + 1
         self.save()
+
+class CandidatePair(models.Model):
+    first = models.OneToOneField(Candidate)
+    second = models.OneToOneField(Candidate)
+
+    def winner(self):
+        return self.first if self.first.votes > self.second.votes else self.second

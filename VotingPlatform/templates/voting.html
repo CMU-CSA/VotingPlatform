@@ -7,16 +7,19 @@
 <body>
   <h1>Please Vote</h1>
   <div>
-    {% for candidate in candidates %}
-      <form action="{% url 'vote' %}" method="post">
-        <span style="font-size:20px">{{candidate.name}}</span>
-        <input type="hidden" name="name" value="{{candidate.name}}" />
-        <input type="submit" value="vote" />
-        <br />
-        <span>{{candidate.information}}</span>
-        {% csrf_token %}
-      </form>
+    <form action="{% url 'vote' %}" method="post">
+    {% for pair in paris %}
+      <intput type="radio" name="pair.id" />
+      <span style="font-size:20px">{{candidate.name}}</span>
+      <input type="submit" value="vote" />
+      <br />
+      <img width="300px" src="{% url 'photo' candidate.id %}" alt="image not availale" />
+      <input type="hidden" name="name" value="{{candidate.name}}" />
+      <br />
+      <span>{{candidate.information}}</span>
+      {% csrf_token %}
     {% endfor %}
+    </form>
   </div>
 </body>
 </html>
