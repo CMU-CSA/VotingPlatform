@@ -10,6 +10,8 @@ urlpatterns = patterns('',
     url(r'^remove$', 'VotingPlatform.views.remove_candidate', name='remove'),
     url(r'^add$', 'VotingPlatform.views.add_candidate', name='add'),
     url(r'^login$', 'VotingPlatform.views.user_login', name='login'),
+    url(r'^pair$', 'VotingPlatform.views.pair_candidates', name='pair'),
+    url(r'^unpair$', 'VotingPlatform.views.unpair_candidates', name='unpair'),
     url(r'^photo/(?P<cid>\d+)$', 'VotingPlatform.views.get_photo', name='photo'),
     # url(r'^blog/', include('blog.urls')),
 

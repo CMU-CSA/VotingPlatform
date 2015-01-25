@@ -26,10 +26,37 @@
     {% endfor %}
   </div>
   <div>
+    {% for pair in pairs %}
+    <form action="{% url 'unpair' %}" method="post">
+      <span>Candidate 1: {{pair.first.name}}</span>
+      <br />
+      <span>Candidate 2: {{pair.second.name}}</span>
+      <input type="hidden" name="pid" value="{{pair.id}}" />
+      <input type="submit" value="unpair" />
+      {% csrf_token %}
+    </form>
+    {% endfor %}
+  </div>
+  <div>
     <h2>Add Candidate</h2>
     <form enctype="multipart/form-data" action="{% url 'add' %}" method="post">
       <table>{{form}}</table>
       <input type="submit" value="create" />
+      {% csrf_token %}
+    </form>
+  </div>
+  <div>
+    <h2>Pair Candidates</h2>
+    <form action="{% url 'pair' %}" method="post">
+      <p>
+        Candidate 1:
+        <input type="text" name="name1" />
+      </p>
+      <p>
+        Candidate 2:
+        <input type="text" name="name2" />
+      </p>
+      <input type="submit" value="pair" />
       {% csrf_token %}
     </form>
   </div>
