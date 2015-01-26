@@ -5,20 +5,29 @@
 <title>Admin Page</title>
 </head>
 <body>
+  <h1>Current Round: {{round.round}}</h1>
+  {% if not round.open %}
+  <p>Open voting is currently disabled. <a href="{% url 'enable_voting' %}">Enable</a></p>
+  {% else %}
+  <p>Open voting is currently enabled. <a href="{% url 'disable_voting' %}">Disable</a></p>
+  {% endif %}
+  <a href="{% url 'next_round' %}">Go to Next Round</a>
+  <a href="{% url 'prev_round' %}">Go to Previous Round</a>
   <h1>List of Candidates</h1>
   <div>
     {% for candidate in candidates %}
     <form action="{% url 'remove' %}" method="post">
-      <span>Name: {{candidate.name}}</span>
-      <input type="submit" value="remove" />
-      <br />
-      <span>Votes: {{candidate.votes}}</span>
-      <br />
+      <p>
+        <a href="{% url 'edit_candidate_page' candidate.id %}">Name: {{candidate.name}}</a> 
+        <input type="submit" value="remove" />
+      </p>
+      <p>Votes (first round): {{candidate.votes_first_round}}</p>
+      <p>Votes (second round): {{candidate.votes_second_round}}</p>
       {% if candidate.picture.name %}
-      <img width="150px" src="{% url 'photo' candidate.id %}" alt="(image not available)">
-      <br />
+      <img src="{% url 'photo' candidate.id %}" alt="(image not available)">
       {% endif %}
-      <span>Information: {{candidate.information}}</span>
+      <p>Round: {{candidate.round}}</p>
+      <p>Information: {{candidate.information}}</p>
       <input type="hidden" name="name" value="{{candidate.name}}"/>
       {% csrf_token %}
     </form>
@@ -28,9 +37,8 @@
   <div>
     {% for pair in pairs %}
     <form action="{% url 'unpair' %}" method="post">
-      <span>Candidate 1: {{pair.first.name}}</span>
-      <br />
-      <span>Candidate 2: {{pair.second.name}}</span>
+      <p>Candidate 1: {{pair.first.name}}</p>
+      <p>Candidate 2: {{pair.second.name}}</p>
       <input type="hidden" name="pid" value="{{pair.id}}" />
       <input type="submit" value="unpair" />
       {% csrf_token %}
@@ -60,5 +68,6 @@
       {% csrf_token %}
     </form>
   </div>
+  <p><a href="{% url 'logout' %}">Logout</a></p>
 </body>
 </html>

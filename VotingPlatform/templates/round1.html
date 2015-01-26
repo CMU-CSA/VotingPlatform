@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Round 1</title>
+</head>
+<body>
+  <h1>Please Vote</h1>
+  <div>
+    <form action="{% url 'vote' %}" method="post">
+    {% for pair in pairs %}
+      <p style="font-size:20px">
+        {{pair.first.name}} 
+        <input type="radio" name="{{pair.id}}" value="{{pair.first.name}}" required="true"/>
+      </p>
+      <img src="{% url 'photo' pair.first.id %}" alt="image not availale" />
+      <p>{{pair.first.information}}</p>
+      <p style="font-size:20px">
+        {{pair.second.name}} 
+        <input type="radio" name="{{pair.id}}" value="{{pair.second.name}}" required="true"/>
+      </p>
+      <img src="{% url 'photo' pair.second.id %}" alt="image not availale" />
+      <p>{{pair.second.information}}</p>
+      {% csrf_token %}
+    {% endfor %}
+    <input type="hidden" name="round" value="1" />
+    <input type="submit" value="vote" />
+    </form>
+  </div>
+</body>
+</html>

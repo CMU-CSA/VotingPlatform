@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Round 2</title>
+</head>
+<body>
+
+  <h1>Please Vote</h1>
+  <div>
+    <form action="{% url 'vote' %}" method="post">
+    {% for candidate in candidates %}
+      <p style="font-size:20px">
+        {{candidate.name}} 
+        <input type="button" onclick="first('{{candidate.name}}')" value="1st" />
+        <input type="button" onclick="second('{{candidate.name}}')" value="2nd" />
+        <input type="button" onclick="third('{{candidate.name}}')" value="3rd" />
+      </p>
+      <img src="{% url 'photo' candidate.id %}" alt="image not availale" />
+      <p>{{candidate.information}}</p>
+    {% endfor %}
+    <input type="hidden" name="round" value="2" />
+    <p>
+      First Choice: 
+	    <select id="first_select" onchange="set_first()">
+			  <option></option>
+			  {% for candidate in candidates %}
+			  <option>{{candidate.name}}</option>
+			  {% endfor %}
+			</select>  
+    </p>
+    <p>
+      Second Choice: 
+      <select id="second_select" onchange="set_second()">
+        <option></option>
+        {% for candidate in candidates %}
+        <option>{{candidate.name}}</option>
+        {% endfor %}
+      </select>  
+    </p>
+    <p>
+      Third Choice: 
+      <select id="third_select" onchange="set_third()">
+        <option></option>
+        {% for candidate in candidates %}
+        <option>{{candidate.name}}</option>
+        {% endfor %}
+      </select>  
+    </p>
+    <input type="hidden" id="first" name="first_choice" required="true" />
+    <input type="hidden" id="second" name="second_choice"  required="true" />
+    <input type="hidden" id="third" name="third_choice"  required="true" />
+    <input type="submit" value="vote" />
+    {% csrf_token %}
+    </form>
+  </div>
+  <script type="text/javascript">
+    var dom1 = document.getElementById("first_select");
+    var dom2 = document.getElementById("second_select");
+    var dom3 = document.getElementById("third_select");
+    var input1 = document.getElementById("first");
+    var input2 = document.getElementById("second");
+    var input3 = document.getElementById("third");
+    function set_first() {
+      var name = dom1.value;
+      input1.value = name;
+      if (input2.value === name) {
+        dom2.value = "";
+        input2.value = "";
+      }
+      if (input3.value === name) {
+        dom3.value = "";
+        input3.value = "";
+      }
+    };
+    
+    function set_second() {
+      var name = dom2.value;
+      input2.value = name;
+      if (input1.value === name) {
+        dom1.value = "";
+        input1.value = "";
+      }
+      if (input3.value === name) {
+        dom3.value = "";
+        input3.value = "";
+      }
+    };
+    
+    function set_third(name) {
+      var name = dom3.value;
+      input3.value = name;
+      if (input1.value === name) {
+        dom1.value = "";
+        input1.value = "";
+      }
+      if (input2.value === name) {
+        dom2.value = "";
+        input2.value = "";
+      }
+    };
+  </script>
+</body>
+</html>

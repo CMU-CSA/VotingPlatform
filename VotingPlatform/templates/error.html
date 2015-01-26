@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+  <h1>Error</h1>
+  <p>{{reason}}</p>
+  {% if redirect %}
+  Redirecting in <span id="cd-timer"></span>
+  <script type="text/javascript">
+    var cd = 3;
+    var timer = document.getElementById("cd-timer");
+    timer.innerHTML = cd;
+    setInterval(function(){
+      cd--;
+      timer.innerHTML = cd;
+      if (cd == 0) {
+        window.location = "{{url}}";
+      }
+    }, 1000);
+  </script>
+  {% else %}
+  <script type="text/javascript">
+    function refresh() {
+      window.location = "{{url}}";
+    };
+  </script>
+  <input type="button" onClick="refresh()" value="refresh"/>
+  {% endif %}
+</body>
+</html>

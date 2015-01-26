@@ -28,6 +28,10 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_URL = '/index'
+
+LOGIN_REDIRECT_URL = '/index'
+
 MEDIA_ROOT = PROJECT_ROOT + 'media/'
 
 MEDIA_URL = '/media/'

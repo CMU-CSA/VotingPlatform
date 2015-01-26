@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Edit Candidate</title>
+</head>
+<body>
+  <h1>Edit Candidate</h1>
+  {% if form.instance.picture.name %}
+  <img src="{% url 'photo' form.instance.id %}" alt="image not availale" />
+  <form action="{% url 'remove_picture' %}" method="post">
+    <input type="hidden" name="id" value="{{form.instance.id}}" />
+    <input type="submit" value="remove picture" />
+    {% csrf_token %}
+  </form>
+  {% endif %}
+  <form enctype="multipart/form-data" action="{% url 'edit_candidate' %}" method="post">
+    <table>{{form}}</table>
+    <input type="hidden" name="id" value="{{form.instance.id}}" />
+    <input type="submit" value="confirm" />
+    <input type="button" onclick="window.location='{% url 'manage' %}'" value="back"/>
+    {% csrf_token %}
+  </form>
+</body>
+</html>
