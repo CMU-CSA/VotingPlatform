@@ -10,12 +10,7 @@
   <div>
     <form action="{% url 'vote' %}" method="post">
     {% for candidate in candidates %}
-      <p style="font-size:20px">
-        {{candidate.name}} 
-        <input type="button" onclick="first('{{candidate.name}}')" value="1st" />
-        <input type="button" onclick="second('{{candidate.name}}')" value="2nd" />
-        <input type="button" onclick="third('{{candidate.name}}')" value="3rd" />
-      </p>
+      <p style="font-size:20px">{{candidate.name}}</p>
       <img src="{% url 'photo' candidate.id %}" alt="image not availale" />
       <p>{{candidate.information}}</p>
     {% endfor %}
