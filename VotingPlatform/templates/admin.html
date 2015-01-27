@@ -5,6 +5,14 @@
 <title>Admin Page</title>
 </head>
 <body>
+  <script type="text/javascript">
+    function confirmRemove(name) {
+      var confirmed = confirm("Are you sure you want to remove candidate " + name + "?");
+      if (confirmed) {
+        document.getElementById("removeform").submit();
+      }
+    };
+  </script>
   <h1>Current Round: {{round.round}}</h1>
   {% if not round.open %}
   <p>Open voting is currently disabled. <a href="{% url 'enable_voting' %}">Enable</a></p>
@@ -16,10 +24,10 @@
   <h1>List of Candidates</h1>
   <div>
     {% for candidate in candidates %}
-    <form action="{% url 'remove' %}" method="post">
+    <form id="removeform" action="{% url 'remove' %}" method="post">
       <p>
         <a href="{% url 'edit_candidate_page' candidate.id %}">Name: {{candidate.name}}</a> 
-        <input type="submit" value="remove" />
+        <input type="button" value="remove" onclick="confirmRemove('{{candidate.name}}')"/>
       </p>
       <p>Votes (first round): {{candidate.votes_first_round}}</p>
       <p>Votes (second round): {{candidate.votes_second_round}}</p>
@@ -28,7 +36,7 @@
       {% endif %}
       <p>Round: {{candidate.round}}</p>
       <p>Information: {{candidate.information}}</p>
-      <input type="hidden" name="name" value="{{candidate.name}}"/>
+      <input type="hidden" name="name" value="{{candidate.name}}" />
       {% csrf_token %}
     </form>
     <br />
