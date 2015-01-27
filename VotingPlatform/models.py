@@ -21,6 +21,11 @@ class CandidatePair(models.Model):
         winner.round = winner.round + 1
         winner.save()
 
+class Session(models.Model):
+    sessionid = models.CharField(max_length = 128)
+    first_voted = models.BooleanField(default = False)
+    second_voted = models.BooleanField(default = False)
+    
 class Round(models.Model):
     round = models.IntegerField(default = 1)
     open = models.BooleanField(default = False)

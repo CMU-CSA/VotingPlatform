@@ -23,6 +23,7 @@ urlpatterns = patterns('',
     url(r'^prevround$', 'VotingPlatform.views.prev_round', name='prev_round'),
     url(r'^enable$', 'VotingPlatform.views.enable_voting', name='enable_voting'),
     url(r'^disable$', 'VotingPlatform.views.disable_voting', name='disable_voting'),
+    url(r'^a_random_page_that_probably_does_not_exist$', 'VotingPlatform.views.troll', name='troll'),
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),

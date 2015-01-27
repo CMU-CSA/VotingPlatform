@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, Http404
 from mimetypes import guess_type
-from VotingPlatform.models import Candidate, CandidatePair, Round
+from VotingPlatform.models import Candidate, CandidatePair, Round, Session
 from VotingPlatform.forms import CandidateForm, CandidateEditForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
@@ -234,7 +234,14 @@ def vote(request):
         return error(request, 'Sorry, the vote for this round is currently not open.', redirect = False)
     if r != cr.round:
         return error(request, 'Current round is now round ' + str(cr.round))
+    sessionid = request.COOKIES['csrftoken']
     if r == 1:
+        try:
+            session = Session.objects.get(sessionid = sessionid)
+            if session.first_voted:
+                return error(request, 'You have voted.', redirect_url = 'a_random_page_that_probably_does_not_exist')
+        except ObjectDoesNotExist:
+            session = Session(sessionid = sessionid)
         pairs = CandidatePair.objects.all()
         votes = []
         for pair in pairs:
@@ -250,7 +257,15 @@ def vote(request):
             votes.append(candidate)
         for candidate in votes:
             candidate.vote_first_round()
+        session.first_voted = True
+        session.save()
     elif r == 2:
+        try:
+            session = Session.objects.get(sessionid = sessionid)
+            if session.second_voted:
+                return error(request, 'You have voted.', redirect_url = reverse('troll'))
+        except ObjectDoesNotExist:
+            session = Session(sessionid = sessionid)
         if not 'first_choice' in request.POST or not request.POST['first_choice'] \
             or not 'second_choice' in request.POST or not request.POST['second_choice'] \
             or not 'third_choice' in request.POST or not request.POST['third_choice']:
@@ -269,4 +284,9 @@ def vote(request):
             third.save()
         except ObjectDoesNotExist:
             return error(request, "Candidate does not exist")
+        session.second_voted = True
+        session.save()
     return render(request, 'success.html')
+
+def troll(request):
+    return render(request, 'troll.html')
