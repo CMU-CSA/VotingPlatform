@@ -2,15 +2,16 @@
 <html>
 <head>
 <meta charset="utf-8">
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'round2.css' %}" />
 <title>Round 2</title>
 </head>
 <body>
-
   <h1>Please Vote</h1>
   <div>
     <form action="{% url 'vote' %}" method="post">
     {% for candidate in candidates %}
-      <p style="font-size:20px">{{candidate.name}}</p>
+      <p>{{candidate.name}}</p>
       <img src="{% url 'photo' candidate.id %}" alt="image not availale" />
       <p>{{candidate.information}}</p>
     {% endfor %}

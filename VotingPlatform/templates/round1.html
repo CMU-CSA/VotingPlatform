@@ -5,26 +5,49 @@
 <title>Round 1</title>
 </head>
 <body>
-  <h1>Please Vote</h1>
+  {% load staticfiles %}
+  <link rel="stylesheet" type="text/css" href="{% static 'round1.css' %}" />
+  <h1 class="title">Please Vote</h1>
   <div>
     <form action="{% url 'vote' %}" method="post">
-    {% for pair in pairs %}
-      <p style="font-size:20px">
-        {{pair.first.name}} 
-        <input type="radio" name="{{pair.id}}" value="{{pair.first.name}}" required="true"/>
-      </p>
-      <img src="{% url 'photo' pair.first.id %}" alt="image not availale" />
-      <p>{{pair.first.information}}</p>
-      <p style="font-size:20px">
-        {{pair.second.name}} 
-        <input type="radio" name="{{pair.id}}" value="{{pair.second.name}}" required="true"/>
-      </p>
-      <img src="{% url 'photo' pair.second.id %}" alt="image not availale" />
-      <p>{{pair.second.information}}</p>
+      {% for pair in pairs %}
+      <table align="center">
+        <tr>
+          <th>Name</th>
+          <th>Picture</th>
+          <th>Information</th>
+        </tr>
+	      <tr>
+	        <td>
+  	        {{pair.first.name}} 
+	         <input type="radio" name="{{pair.id}}" value="{{pair.first.name}}" required="true"/>
+	        </td>
+	        <td>
+    	      <img src="{% url 'photo' pair.first.id %}" alt="image not availale" />
+    	    </td>
+    	    <td>
+	          {{pair.first.information}}
+	        </td>
+	      </tr>
+	      <tr>
+	        <td>
+  	        {{pair.second.name}} 
+	          <input type="radio" name="{{pair.id}}" value="{{pair.second.name}}" required="true"/>
+	        </td>
+	        <td>
+    	      <img src="{% url 'photo' pair.second.id %}" alt="image not availale" />
+    	    </td>
+    	    <td>
+            {{pair.second.information}}
+          </td>
+        </tr>
+      </table>
       {% csrf_token %}
-    {% endfor %}
-    <input type="hidden" name="round" value="1" />
-    <input type="submit" value="vote" />
+      {% endfor %}
+	    <input type="hidden" name="round" value="1" />
+	    <div class="submit-div">
+	      <input class="submit-button" type="submit" value="vote" />
+	    </div>
     </form>
   </div>
 </body>
