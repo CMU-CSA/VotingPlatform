@@ -16,11 +16,11 @@
           <th>Name</th>
           <th>Picture</th>
           <th>Information</th>
+          <th>Selection</th>
         </tr>
 	      <tr>
 	        <td>
-  	        {{pair.first.name}} 
-	         <input type="radio" name="{{pair.id}}" value="{{pair.first.name}}" required="true"/>
+  	        {{pair.first.name}}
 	        </td>
 	        <td>
     	      <img src="{% url 'photo' pair.first.id %}" alt="image not availale" />
@@ -28,17 +28,22 @@
     	    <td>
 	          {{pair.first.information}}
 	        </td>
+            <td>
+               <input type="radio" name="{{pair.id}}" value="{{pair.first.name}}" required="true"/>
+            </td>
 	      </tr>
 	      <tr>
 	        <td>
-  	        {{pair.second.name}} 
-	          <input type="radio" name="{{pair.id}}" value="{{pair.second.name}}" required="true"/>
+  	        {{pair.second.name}}
 	        </td>
 	        <td>
     	      <img src="{% url 'photo' pair.second.id %}" alt="image not availale" />
     	    </td>
     	    <td>
             {{pair.second.information}}
+          </td>
+          <td>
+            <input type="radio" name="{{pair.id}}" value="{{pair.second.name}}" required="true"/>
           </td>
         </tr>
       </table>
