@@ -1,0 +1,47 @@
+#main{
+	font-family: 'Lato', sans-serif;
+}
+
+form{
+	font-family: 'Lato', sans-serif;
+	margin:50px 0;
+}
+
+.btn {
+	font-family: 'Lato', sans-serif;
+	font-size: 2rem;
+	padding: 5px 20px;
+	margin:20px 0;
+}
+
+.error{
+	padding-top: 10%;
+	padding-bottom: 5%;
+}
+
+header{
+	background-color: #6A91C0;
+	font-family: 'Lato', sans-serif;
+	padding: 10px 0 ;
+	-webkit-box-shadow: 0px 14px 22px -2px rgba(195,205,222,1);;
+	-moz-box-shadow: 0px 14px 22px -2px rgba(195,205,222,1);;
+	box-shadow: 0px 14px 22px -2px rgba(195,205,222,1);;
+}
+footer{
+	background-color: #6A91C0;
+	font-family: 'Lato', sans-serif;
+	-webkit-box-shadow: 0px -14px 22px -2px rgba(195,205,222,1);;
+	-moz-box-shadow: 0px -14px 22px -2px rgba(195,205,222,1);;
+	box-shadow: 0px -14px 22px -2px rgba(195,205,222,1);;
+	padding: 10px 0 ;
+	color: #fff;
+}
+a{
+	color: #fff;
+}
+header strong{
+	color:#fff;
+}
+.title{
+	padding-top: 20px;
+}

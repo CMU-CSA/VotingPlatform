@@ -3,33 +3,49 @@
 <head>
 <meta charset="utf-8">
 {% load staticfiles %}
-<link rel="stylesheet" type="text/css" href="{% static 'error.css' %}" />
+<link rel="stylesheet" type="text/css" href="../static/normalize.css" />
+<link rel="stylesheet" type="text/css" href="../static/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="../static/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="../static/styles.css" />
 <title>Error</title>
 </head>
+
 <body>
-  <h1>Error</h1>
-  <p>{{reason}}</p>
-  {% if redirect %}
-  Redirecting in <span id="cd-timer"></span>
-  <script type="text/javascript">
-    var cd = 3;
-    var timer = document.getElementById("cd-timer");
-    timer.innerHTML = cd;
-    setInterval(function(){
-      cd--;
-      timer.innerHTML = cd;
-      if (cd == 0) {
-        window.location = "{{url}}";
-      }
-    }, 1000);
-  </script>
-  {% else %}
-  <script type="text/javascript">
-    function refresh() {
-      window.location = "{{url}}";
-    };
-  </script>
-  <input type="button" onClick="refresh()" value="refresh" />
-  {% endif %}
+<div id="main">
+  <div class="error">
+  <div class="row">
+    <div class="col-xs-12 col-sm-6 col-sm-offset-3 text-center">
+      <h1>Oops. Error!</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-6 col-sm-offset-3 text-center">
+      <h4>{{reason}}</h4>
+      {% if redirect %}
+      <h4>Redirecting in <span id="cd-timer"></span> s.</h4>
+      <script type="text/javascript">
+        var cd = 100;
+        var timer = document.getElementById("cd-timer");
+        timer.innerHTML = cd;
+        setInterval(function(){
+          cd--;
+          timer.innerHTML = cd;
+          if (cd == 0) {
+            window.location = "{{url}}";
+          }
+        }, 1000);
+      </script>
+      {% else %}
+      <script type="text/javascript">
+        function refresh() {
+          window.location = "{{url}}";
+        };
+      </script>
+      <input class="btn btn-default" type="button" onClick="refresh()" value="refresh" />
+      {% endif %}
+    </div>
+  </div>
+  </div>
+</div>
 </body>
 </html>

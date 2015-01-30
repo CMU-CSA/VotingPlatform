@@ -3,53 +3,100 @@
 <head>
 <meta charset="utf-8">
 {% load staticfiles %}
-<link rel="stylesheet" type="text/css" href="{% static 'round2.css' %}" />
+<link rel="stylesheet" type="text/css" href="../static/normalize.css" />
+<link rel="stylesheet" type="text/css" href="../static/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="../static/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="../static/styles.css" />
 <title>Round 2</title>
 </head>
 <body>
-  <h1>Please Vote</h1>
-  <div>
-    <form action="{% url 'vote' %}" method="post">
-    {% for candidate in candidates %}
-      <p>{{candidate.name}}</p>
-      <img src="{% url 'photo' candidate.id %}" alt="image not availale" />
-      <p>{{candidate.information}}</p>
-    {% endfor %}
-    <input type="hidden" name="round" value="2" />
-    <p>
-      First Choice: 
-	    <select id="first_select" onchange="set_first()">
-			  <option></option>
-			  {% for candidate in candidates %}
-			  <option>{{candidate.name}}</option>
-			  {% endfor %}
-			</select>  
-    </p>
-    <p>
-      Second Choice: 
-      <select id="second_select" onchange="set_second()">
-        <option></option>
+<!--header for IDOL -->
+  <header>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6" align="left">
+                <h3><strong>VoteIDOL</strong></h3>
+            </div>
+            <div class="col-sm-6" align="right">
+                <h3><a href="https://www.facebook.com/events/348943201979672/?ref_dashboard_filter=upcoming">About</a></h3>
+            </div>
+        </div>
+    </div>
+  </header>
+
+<!--main body here-->
+  <div id="main">
+    
+    <div class="row">
+      <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 text-center">
+        <h1 class="title"><strong>Please Vote</strong></h1>
+      </div> 
+    
+    <div class="row">
+      <div class="col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2 text-center">
+        <form action="{% url 'vote' %}" method="post">
         {% for candidate in candidates %}
-        <option>{{candidate.name}}</option>
+          <h3><strong>{{candidate.name}}</strong></h3>
+          <img src="{% url 'photo' candidate.id %}" alt="image not availale" class="img-round" width="150px"/>
+          <h4>{{candidate.information}}</h4>
         {% endfor %}
-      </select>  
-    </p>
-    <p>
-      Third Choice: 
-      <select id="third_select" onchange="set_third()">
-        <option></option>
-        {% for candidate in candidates %}
-        <option>{{candidate.name}}</option>
-        {% endfor %}
-      </select>  
-    </p>
-    <input type="hidden" id="first" name="first_choice" required="true" />
-    <input type="hidden" id="second" name="second_choice"  required="true" />
-    <input type="hidden" id="third" name="third_choice"  required="true" />
-    <input type="submit" value="vote" />
-    {% csrf_token %}
-    </form>
+        <input type="hidden" name="round" value="2" />
+       
+
+        <div class="row">
+          <div class="col-xs-6 text-center">
+            <h4>First Choice: </h4>
+          </div>
+          <div class="col-xs-4 col-xs-offset-1 text-center">
+      	    <select class="form-control" id="first_select" onchange="set_first()">
+      			  <option></option>
+      			  {% for candidate in candidates %}
+      			  <option>{{candidate.name}}</option>
+      			  {% endfor %}
+      			</select>  
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-6 text-center">
+            <h4>Second Choice: </h4>
+          </div>
+          <div class="col-xs-4 col-xs-offset-1 text-center">
+            <select class="form-control" id="second_select" onchange="set_second()">
+              <option></option>
+              {% for candidate in candidates %}
+              <option>{{candidate.name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-6 text-center">
+            <h4>Third Choice: </h4>
+          </div>
+          <div class="col-xs-4 col-xs-offset-1 text-center">
+            <select class="form-control" id="third_select" onchange="set_third()">
+              <option></option>
+              {% for candidate in candidates %}
+              <option>{{candidate.name}}</option>
+              {% endfor %}
+            </select> 
+          </div> 
+        </div>
+
+        <div class="row">
+        <input type="hidden" id="first" name="first_choice" required="true" />
+        <input type="hidden" id="second" name="second_choice"  required="true" />
+        <input type="hidden" id="third" name="third_choice"  required="true" />
+        <input class="btn btn-default" type="submit" value="Submit my vote" />
+        {% csrf_token %}
+        </form>
+      </div>
+    </div>
   </div>
+
+<!--javascript-->
   <script type="text/javascript">
     var dom1 = document.getElementById("first_select");
     var dom2 = document.getElementById("second_select");
@@ -96,5 +143,16 @@
       }
     };
   </script>
+
+<!-- footer looks nicer-->
+  <footer class="text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h5>Bring to you by CMU Chinese Student Association.</h5>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
