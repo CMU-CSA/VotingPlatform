@@ -213,6 +213,12 @@ def enable_voting(request):
 def disable_voting(request):
     current_round().toggle_voting(False)
     return redirect(reverse('manage'))
+
+@login_required
+@transaction.atomic
+def clear_records(request):
+    Session.objects.all().delete()
+    return redirect(reverse('manage'))
     
 def get_photo(request, cid):
     entry = get_object_or_404(Candidate, id=cid)

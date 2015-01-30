@@ -19,8 +19,12 @@
   {% else %}
   <p>Open voting is currently enabled. <a href="{% url 'disable_voting' %}">Disable</a></p>
   {% endif %}
-  <a href="{% url 'next_round' %}">Go to Next Round</a>
-  <a href="{% url 'prev_round' %}">Go to Previous Round</a>
+  <p><a href="{% url 'next_round' %}">Go to Next Round</a></p>
+  <p><a href="{% url 'prev_round' %}">Go to Previous Round</a></p>
+  <p>
+    <span style="color:red">Dangerous: Do not click this unless you know what you are doing </span>
+    <a href="{% url 'clear_records' %}">Clear Voting Session Records</a>
+  </p>
   <h1>List of Candidates</h1>
   <div>
     {% for candidate in candidates %}
