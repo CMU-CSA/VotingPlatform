@@ -22,11 +22,11 @@ SECRET_KEY = '5ulqh!pjajkr9+o9u_v*el$!rb$lv5#5b2(cz$1%+doi)2+eh@'
 PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__)) + '/'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['ec2-54-152-66-180.compute-1.amazonaws.com']
 
 LOGIN_URL = '/index'
 
