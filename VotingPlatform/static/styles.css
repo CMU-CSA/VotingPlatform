@@ -1,12 +1,29 @@
-#main{
+@media screen and (min-width:700px){
+	#main{
+		font-family: 'Lato', sans-serif;
+		min-height: 700px;
+	}
+}
+@media screen and (max-width:700px) {
+  #main{
 	font-family: 'Lato', sans-serif;
+	min-height: 500px;
+}
 }
 
-form{
+@media screen and (min-width:700px){
+	form{
+	font-family: 'Lato', sans-serif;
+	margin:100px 0;
+	}
+}
+
+@media screen and (max-width:700px) {
+  form{
 	font-family: 'Lato', sans-serif;
 	margin:50px 0;
+	}
 }
-
 .btn {
 	font-family: 'Lato', sans-serif;
 	font-size: 2rem;
@@ -42,6 +59,14 @@ a{
 header strong{
 	color:#fff;
 }
+italic {
+	font-family:'Vollkorn', serif;
+	font-style: italic;
+}
 .title{
 	padding-top: 20px;
+}
+italic {
+	font-family: font-family: 'Vollkorn', serif;
+	font-style: italic;
 }

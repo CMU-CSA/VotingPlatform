@@ -11,7 +11,10 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 
 def current_round():
-    return Round.objects.get(id = 1)
+    rd = Round.objects.get(id = 1)
+    rd.open = True
+    rd.save()
+    return rd
 
 def error(request, reason, redirect_url = None, redirect = True):
     return render(request, "error.html", {'reason':reason, 'url':reverse('home') if not redirect_url else redirect_url, 'redirect': redirect})
@@ -56,6 +59,7 @@ def round2(request):
     rd = current_round()
     if not rd.open:
         return error(request, "Sorry. Voting will start soon!", redirect_url = reverse('round2'), redirect = False)
+    rd.round = 2
     if rd.round != 2:
         return redirect(reverse('round' + str(rd.round)))
     candidates = Candidate.objects.filter(round = 2)
