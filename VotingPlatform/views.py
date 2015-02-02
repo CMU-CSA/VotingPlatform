@@ -218,6 +218,10 @@ def disable_voting(request):
 @transaction.atomic
 def clear_records(request):
     Session.objects.all().delete()
+    for ticket in TicketNumber.objects.all():
+        ticket.first_voted = False
+        ticket.second_voted = False
+        ticket.save()
     return redirect(reverse('manage'))
     
 def get_photo(request, cid):
