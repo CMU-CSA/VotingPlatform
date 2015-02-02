@@ -26,7 +26,7 @@ DEBUG = False
 
 TEMPLATE_DEBUG = False
 
-ALLOWED_HOSTS = ['ec2-54-152-66-180.compute-1.amazonaws.com']
+ALLOWED_HOSTS = ['ec2-54-152-17-6.compute-1.amazonaws.com']
 
 LOGIN_URL = '/index'
 

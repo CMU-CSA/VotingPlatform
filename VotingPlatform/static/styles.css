@@ -49,6 +49,10 @@
 	padding-bottom: 5%;
 }
 
+.information {
+  max-width: 300px;
+}
+
 header{
 	background-color: #6A91C0;
 	font-family: 'Lato', sans-serif;
