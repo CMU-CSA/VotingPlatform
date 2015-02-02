@@ -33,3 +33,8 @@ class Round(models.Model):
     def toggle_voting(self, enable):
         self.open = enable
         self.save()
+        
+class TicketNumber(models.Model):
+    number = models.IntegerField()
+    first_voted = models.BooleanField(default = False)
+    second_voted = models.BooleanField(default = False)

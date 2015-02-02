@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, Http404
 from mimetypes import guess_type
-from VotingPlatform.models import Candidate, CandidatePair, Round, Session
+from VotingPlatform.models import Candidate, CandidatePair, Round, Session, TicketNumber
 from VotingPlatform.forms import CandidateForm, CandidateEditForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
@@ -231,10 +231,13 @@ def get_photo(request, cid):
 def vote(request):
     if not 'round' in request.POST or not request.POST['round']:
         return error(request, 'Argument "round" is missing in request')
+    if not 'ticket' in request.POST or not request.POST['ticket']:
+        return error(request, 'Argument "ticket" is missing in request')
     try:
         r = int(request.POST['round'])
+        ticket = int(request.POST['ticket'])
     except:
-        return error(request, 'Error parsing argument "round"')
+        return error(request, 'Error parsing argument "round" or "ticket"')
     cr = current_round()
     if not cr.open:
         return error(request, 'Sorry, the vote for this round is currently not open.', redirect = False)
@@ -248,6 +251,12 @@ def vote(request):
                 return error(request, 'You have voted.', redirect_url = 'a_random_page_that_probably_does_not_exist')
         except ObjectDoesNotExist:
             session = Session(sessionid = sessionid)
+        try:
+            number = TicketNumber.objects.get(number = ticket)
+            if number.first_voted:
+                return error(request, 'You have voted.', redirect_url = 'a_random_page_that_probably_does_not_exist')
+        except ObjectDoesNotExist:
+            return error(request, 'Sorry, you ticket number ' + str(ticket) + ' is not in the system')
         pairs = CandidatePair.objects.all()
         votes = []
         for pair in pairs:
@@ -265,6 +274,8 @@ def vote(request):
             candidate.vote_first_round()
         session.first_voted = True
         session.save()
+        number.first_voted = True
+        number.save()
     elif r == 2:
         try:
             session = Session.objects.get(sessionid = sessionid)
@@ -272,6 +283,12 @@ def vote(request):
                 return error(request, 'You have voted.', redirect_url = reverse('troll'))
         except ObjectDoesNotExist:
             session = Session(sessionid = sessionid)
+        try:
+            number = TicketNumber.objects.get(number = ticket)
+            if number.second_voted:
+                return error(request, 'You have voted.', redirect_url = 'a_random_page_that_probably_does_not_exist')
+        except ObjectDoesNotExist:
+            return error(request, 'Sorry, you ticket number ' + str(ticket) + ' is not in the system')
         if not 'first_choice' in request.POST or not request.POST['first_choice'] \
             or not 'second_choice' in request.POST or not request.POST['second_choice'] \
             or not 'third_choice' in request.POST or not request.POST['third_choice']:
@@ -292,6 +309,8 @@ def vote(request):
             return error(request, "Candidate does not exist")
         session.second_voted = True
         session.save()
+        number.second_voted = True
+        number.save()
     return render(request, 'success.html')
 
 def troll(request):
