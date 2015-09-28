@@ -1,0 +1,125 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+ <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+      <title>CMU Best Voice</title>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.4.min.js"></script>
+  </head>
+  <style>
+      body {
+          margin: 0;
+      }
+
+      h1 {
+          margin: 0;
+          font-size: 40px;
+      }
+      .title {
+          height: 65px;
+          width: 100%;
+          padding-top: 25px;
+          text-align: center;
+          background-color: red;
+          color: white;
+      }
+      .content {
+          width: 80%;
+          margin: 0 auto;
+      }
+      .ct-series-a .ct-bar {
+          /* Colour of your bars */
+          stroke: red;
+          /* The width of your bars */
+          stroke-width: 100px;
+      }
+      .ct-series-b .ct-bar {
+          stroke: orange;
+          stroke-width: 100px;
+      }
+      .ct-labels .ct-horizontal {
+          font-size: 33px;
+      }
+      .footer {
+          position: fixed;
+          bottom: 0;
+          width: 100%;
+          text-align: right;
+          background-color: gray;
+          color: white;
+          height: 50px;
+      }
+      h3 {  
+          position: absolute;
+          display: inline;
+          right: 107px;
+      }
+      img {
+          width: 45px;
+          margin: 3px;
+      }
+  </style>
+<body>
+    <div class="container title">
+        <h1>CMU 好声音</h1>
+    </div>
+    <div class="container content">
+        <div class="ct-chart ct-perfect-fourth"></div>
+    </div>
+    <footer class="footer">
+        <h3>Presented by</h3>
+        <img src="{% static 'mainpage/CSA2.png' %}">
+    </footer>
+
+<script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+<script>
+    var list = {
+        labels: [],
+        series: [[],[]]
+    };
+
+    var options = {
+        height: '600',
+        high: 400,
+        low: 0,
+        stackBars: true,
+        onlyIntegers: true,
+        axisX: {
+            showGrid: false
+        },
+        axisY: {
+            onlyInteger: true,
+            showGrid: false,
+            showLabel: true,
+            labelInterpolationFnc: function(value) {
+                return (value / 1);
+            }
+        }
+    };
+
+    var chart = new Chartist.Bar('.ct-chart', list, options);
+
+    $(document).ready(function() {
+        setInterval(function() {
+            $.get("/voice/displayData", function (data) {
+                if (data['labels'].length == 8) {
+                    options.high = 300
+                }
+                else if (data['labels'].length == 6) {
+                    options.high = 500
+                }
+                list = {
+                    labels: data['labels'],
+                    series: data['series']
+                };
+                chart.update(list, options, true);
+            });
+        },1500)
+    });
+
+</script>
+</body>
+</html>

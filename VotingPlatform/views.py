@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, JsonResponse
 from mimetypes import guess_type
-from VotingPlatform.models import Candidate, CandidatePair, Round, Session, TicketNumber
+from VotingPlatform.models import Candidate, Round, Session, TicketNumber, AndrewIDs
 from VotingPlatform.forms import CandidateForm, CandidateEditForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
@@ -10,6 +10,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 
+# global variables:
+
+
 def current_round():
     return Round.objects.get(id = 1)
 
@@ -17,10 +20,11 @@ def error(request, reason, redirect_url = None, redirect = True):
     return render(request, "error.html", {'reason':reason, 'url':reverse('home') if not redirect_url else redirect_url, 'redirect': redirect})
 
 def home(request):
+    round = current_round()
     if request.user.is_authenticated():
         return redirect(reverse('manage'))
     else:
-        return redirect(reverse('round' + str(current_round().round)))
+        return redirect(reverse('round' + str(round.round)))
     
 def login_index(request):
     return render(request, 'index.html')
@@ -44,29 +48,31 @@ def user_logout(request):
     return redirect(reverse('home'))
 
 def round1(request):
-    rd = current_round()
-    if not rd.open:
+    round = current_round()
+    if not round.open:
         return error(request, "Sorry. Voting will start soon!", redirect_url = reverse('round1'), redirect = False)
-    if rd.round != 1:
-        return redirect(reverse('round' + str(rd.round)))
-    pairs = CandidatePair.objects.all()
-    return render(request, 'round1.html', {'pairs':pairs})
+    if round.round != 1:
+        return redirect(reverse('round' + str(round.round)))
+    # pairs = CandidatePair.objects.all()
+    candidates1 = Candidate.objects.filter(round = 1)
+    return render(request, 'round1.html', {'candidates':candidates1})
 
 def round2(request):
-    rd = current_round()
-    if not rd.open:
+    round = current_round()
+    if not round.open:
         return error(request, "Sorry. Voting will start soon!", redirect_url = reverse('round2'), redirect = False)
-    if rd.round != 2:
-        return redirect(reverse('round' + str(rd.round)))
-    candidates = Candidate.objects.filter(round = 2)
-    return render(request, 'round2.html', {'candidates':candidates})
+    if round.round != 2:
+        return redirect(reverse('round' + str(round.round)))
+    candidates2 = Candidate.objects.filter(round = 2)
+    return render(request, 'round2.html', {'candidates':candidates2})
 
 @login_required
 def admin_page(request):
-    r = current_round()
+    round = current_round()
     candidates = Candidate.objects.all()
-    pairs = CandidatePair.objects.all()
-    context = {'form':CandidateForm(), 'candidates':candidates, 'pairs':pairs, 'round':r}
+    # pairs = CandidatePair.objects.all()
+    # context = {'form':CandidateForm(), 'candidates':candidates, 'pairs':pairs, 'round':r}
+    context = {'form':CandidateForm(),'candidates':candidates,'round':round}
     return render(request, 'admin.html', context)
 
 @login_required
@@ -147,7 +153,7 @@ def edit_candidate(request):
         pass
     form.save()
     return redirect(reverse('manage'))
-
+"""
 @login_required
 @transaction.atomic
 def pair_candidates(request):
@@ -165,6 +171,7 @@ def pair_candidates(request):
     except ObjectDoesNotExist:
         return error(request, 'Candidate ' + name1 + ' or ' + name2 + ' does not exist')
 
+
 @login_required
 @transaction.atomic
 def unpair_candidates(request):
@@ -177,48 +184,55 @@ def unpair_candidates(request):
         return redirect(reverse('manage'))
     except ObjectDoesNotExist:
         return error(request, "Candidate Pair #" + str(pid) + " does not exist")
+"""
 
 @login_required
 @transaction.atomic
 def next_round(request):
-    r = current_round()
-    if r.round == 1:
+    round = current_round()
+    if round.round == 1:
+        """
         for pair in CandidatePair.objects.all():
             pair.set_winner()
-        r.round = r.round + 1
-        r.save()
+        """
+
+        round.round = 2
+        round.save()
     return redirect(reverse('manage'))
 
 @login_required
 @transaction.atomic
 def prev_round(request):
-    r = current_round()
-    if r.round > 1:
-        candidates = Candidate.objects.filter(round = r.round)
+    round = current_round()
+
+    if round.round > 1:
+        candidates = Candidate.objects.filter(round = round.round)
         for candidate in candidates:
             candidate.round = candidate.round - 1
             candidate.save()
-        r.round = r.round - 1
-        r.save()
+        round.round = 1
+        round.save()
     return redirect(reverse('manage'))
 
 @login_required
 @transaction.atomic
 def enable_voting(request):
-    current_round().toggle_voting(True)
+    round = current_round()
+    round.toggle_voting(True)
     return redirect(reverse('manage'))
 
 @login_required
 @transaction.atomic
 def disable_voting(request):
-    current_round().toggle_voting(False)
+    round = current_round()
+    round.toggle_voting(False)
     return redirect(reverse('manage'))
 
 @login_required
 @transaction.atomic
 def clear_records(request):
     Session.objects.all().delete()
-    for ticket in TicketNumber.objects.all():
+    for ticket in AndrewIDs.objects.all():
         ticket.first_voted = False
         ticket.second_voted = False
         ticket.save()
@@ -231,38 +245,41 @@ def get_photo(request, cid):
     content_type = guess_type(entry.picture.name)
     return HttpResponse(entry.picture, content_type=content_type)
 
+
 @transaction.atomic
 def vote(request):
+
+    round = current_round()
+
     if not 'round' in request.POST or not request.POST['round']:
         return error(request, 'Argument "round" is missing in request')
     if not 'ticket' in request.POST or not request.POST['ticket']:
         return error(request, 'Argument "ticket" is missing in request')
     try:
         r = int(request.POST['round'])
-        ticket = int(request.POST['ticket'])
+        ticket = str(request.POST['ticket'])
     except:
         return error(request, 'Error parsing argument "round" or "ticket"')
-    cr = current_round()
+    cr = round
     if not cr.open:
         return error(request, 'Sorry, the vote for this round is currently not open.', redirect = False)
     if r != cr.round:
         return error(request, 'Current round is now round ' + str(cr.round))
     sessionid = request.COOKIES['csrftoken']
+
+
     if r == 1:
+        candidates1 = Candidate.objects.filter(round = 1)
         try:
             session = Session.objects.get(sessionid = sessionid)
             if session.first_voted:
                 return error(request, 'You have voted.', redirect_url = 'a_random_page_that_probably_does_not_exist')
         except ObjectDoesNotExist:
             session = Session(sessionid = sessionid)
-        try:
-            number = TicketNumber.objects.get(number = ticket)
-            if number.first_voted:
-                return error(request, 'You have voted.', redirect_url = 'a_random_page_that_probably_does_not_exist')
-        except ObjectDoesNotExist:
-            return error(request, 'Sorry, you ticket number ' + str(ticket) + ' is not in the system')
-        pairs = CandidatePair.objects.all()
-        votes = []
+
+        # pairs = CandidatePair.objects.all()
+        # votes = []
+        """
         for pair in pairs:
             pid = str(pair.id)
             if not pid in request.POST or not request.POST[pid]:
@@ -276,46 +293,119 @@ def vote(request):
             votes.append(candidate)
         for candidate in votes:
             candidate.vote_first_round()
+        """
+        if not 'first_choice' in request.POST or not request.POST['first_choice'] \
+            or not 'second_choice' in request.POST or not request.POST['second_choice'] \
+                or not 'third_choice' in request.POST or not request.POST['third_choice']:
+            return error(request, "first/second/third choice is missing in request")
+        try:
+            first = candidates1.get(name = request.POST['first_choice'])
+            second = candidates1.get(name = request.POST['second_choice'])
+            third = candidates1.get(name = request.POST['third_choice'])
+            if first.id == second.id or first.id == third.id or second.id == third.id:
+                return error(request, "Cannot select the same candidate more than once")
+            first.votes_first_round = first.votes_first_round + 1
+            second.votes_first_round = second.votes_first_round + 1
+            third.votes_first_round = third.votes_first_round + 1
+            first.save()
+            second.save()
+            third.save()
+        except ObjectDoesNotExist:
+            return error(request, "Candidate does not exist")
+
         session.first_voted = True
         session.save()
-        number.first_voted = True
-        number.save()
     elif r == 2:
+        candidates2 = Candidate.objects.filter(round = 2)
         try:
             session = Session.objects.get(sessionid = sessionid)
             if session.second_voted:
                 return error(request, 'You have voted.', redirect_url = reverse('troll'))
         except ObjectDoesNotExist:
             session = Session(sessionid = sessionid)
-        try:
-            number = TicketNumber.objects.get(number = ticket)
-            if number.second_voted:
-                return error(request, 'You have voted.', redirect_url = 'a_random_page_that_probably_does_not_exist')
-        except ObjectDoesNotExist:
-            return error(request, 'Sorry, you ticket number ' + str(ticket) + ' is not in the system')
         if not 'first_choice' in request.POST or not request.POST['first_choice'] \
             or not 'second_choice' in request.POST or not request.POST['second_choice'] \
-            or not 'third_choice' in request.POST or not request.POST['third_choice']:
+                or not 'third_choice' in request.POST or not request.POST['third_choice']:
             return error(request, "first/second/third choice is missing in request")
         try:
-            first = Candidate.objects.get(name = request.POST['first_choice'])
-            second = Candidate.objects.get(name = request.POST['second_choice'])
-            third = Candidate.objects.get(name = request.POST['third_choice'])
+            number = request.POST['ticket']
+            first = candidates2.get(name = request.POST['first_choice'])
+            second = candidates2.get(name = request.POST['second_choice'])
+            third = candidates2.get(name = request.POST['third_choice'])
             if first.id == second.id or second.id == third.id or first.id == third.id:
                 return error(request, "Cannot select the same candidate more than once")
-            first.votes_second_round = first.votes_second_round + 5
-            second.votes_second_round = second.votes_second_round + 3
-            third.votes_second_round = third.votes_second_round + 1
+            if number == 'JUDGE1' or number == 'JUDGE2' or number == 'JUDGE3' or number == 'JUDGE4':
+                first.votes_judge = first.votes_judge + 1
+                second.votes_judge = second.votes_judge + 1
+                third.votes_judge = third.votes_judge + 1
+            else:
+                first.votes_second_round = first.votes_second_round + 1
+                second.votes_second_round = second.votes_second_round + 1
+                third.votes_second_round = third.votes_second_round + 1
             first.save()
             second.save()
             third.save()
         except ObjectDoesNotExist:
             return error(request, "Candidate does not exist")
+
         session.second_voted = True
         session.save()
-        number.second_voted = True
-        number.save()
     return render(request, 'success.html')
 
 def troll(request):
     return render(request, 'troll.html')
+
+def display(request):
+    return render(request, 'display.html')
+
+def coefficient():
+    n = len(AndrewIDs.objects.filter(first_voted = True))
+    x = float(300)*3.0*1.5 / 12.0 /2
+    return x
+
+def displayData(request):
+
+    r = current_round()
+    labels = []
+    judge_votes = []
+    audience_votes = []
+    data = {
+        'labels':[],
+        'series':[]
+    }
+    if r.round == 1:
+        candidates1 = Candidate.objects.filter(round = 1)
+        candidates_1 = candidates1.order_by('id')
+        for candidate in candidates_1:
+            labels.append(candidate.name)
+            audience_votes.append(candidate.votes_first_round)
+            data['series'] = [[0,0,0,0,0,0,0,0],audience_votes]
+            data['labels'] = labels
+    elif r.round == 2:
+        coeff = coefficient()
+        candidates2 = Candidate.objects.filter(round = 2)
+        candidates_2 = candidates2.order_by('id')
+        for candidate in candidates_2:
+            labels.append(candidate.name)
+            x = float(candidate.votes_judge)*coeff
+            judge_votes.append(int(x))
+            audience_votes.append(candidate.votes_second_round)
+        data['series'] = [judge_votes,audience_votes]
+        data['labels'] = labels
+    return JsonResponse(data)
+
+@transaction.atomic
+def add_andrewids(request):
+    txt_file = request.FILES['andrewids']
+    andrew_ids = txt_file.readlines()
+    mes = []
+    for andrewid in andrew_ids:
+        andrew_id = andrewid[0:-1]
+        try:
+            AndrewIDs.objects.get(andrewId = andrew_id)
+            mes.append('-- Audience andrew ID: '+ str(andrew_id) + ' already exists')
+        except ObjectDoesNotExist:
+            aid = AndrewIDs(andrewId = andrew_id)
+            aid.save()
+            mes.append('-- Audience andrew ID: ' + str(andrew_id) + ' added')
+    return render(request,'mes.html',{'messages': mes})
