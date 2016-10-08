@@ -1,10 +1,10 @@
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from VotingPlatform.models import Round, Candidate, CandidatePair
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     
-    def handle_noargs(self, **options):
+    def handle(self, **options):
         self.stdout.write("-- Creating admin")
         admin = User.objects.create_user(username='cmucsa', first_name='Harry', last_name='zeng', password='santiwansui')
         admin.save()

@@ -1,10 +1,10 @@
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from VotingPlatform.models import TicketNumber
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     
-    def handle_noargs(self, **options):
+    def handle(self, **options):
         for i in range(1, 400):
             t = TicketNumber(number = i)
             t.save()

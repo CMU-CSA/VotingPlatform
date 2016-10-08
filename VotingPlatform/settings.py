@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
@@ -22,11 +21,11 @@ SECRET_KEY = '5ulqh!pjajkr9+o9u_v*el$!rb$lv5#5b2(cz$1%+doi)2+eh@'
 PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__)) + '/'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 TEMPLATE_DEBUG = False
 
-ALLOWED_HOSTS = ['ec2-54-152-17-6.compute-1.amazonaws.com']
+ALLOWED_HOSTS = ['*']
 
 LOGIN_URL = '/index'
 
@@ -58,6 +57,22 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'VotingPlatform.urls'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 
 WSGI_APPLICATION = 'VotingPlatform.wsgi.application'
 
@@ -91,3 +106,7 @@ USE_TZ = True
 STATIC_ROOT = PROJECT_ROOT + 'static/'
 
 STATIC_URL = '/static/'
+
+# TEMPLATE_DIRS = (
+#     os.path.join(BASE_DIR, 'templates'),
+# )

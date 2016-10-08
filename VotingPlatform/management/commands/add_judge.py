@@ -1,9 +1,9 @@
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from VotingPlatform.models import AndrewIDs
 from django.core.exceptions import ObjectDoesNotExist
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('judge_id', nargs='+', type = str)

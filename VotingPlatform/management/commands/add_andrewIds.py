@@ -1,11 +1,11 @@
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from VotingPlatform.models import AndrewIDs
 from django.core.exceptions import ObjectDoesNotExist
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
 
-    def handle_noargs(self, **options):
+    def handle(self, **options):
         txt_file = open("VotingPlatform/andrewids.txt","r")
         andrew_ids = txt_file.readlines()
         for andrewid in andrew_ids:

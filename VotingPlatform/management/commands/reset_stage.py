@@ -1,11 +1,11 @@
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from VotingPlatform.models import AndrewIDs, Candidate, Session
 from django.core.exceptions import ObjectDoesNotExist
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
 
-     def handle_noargs(self, **options):
+     def handle(self, **options):
         Session.objects.all().delete()
         self.stdout.write('-- All sessions deleted')
         for ticket in AndrewIDs.objects.all():
