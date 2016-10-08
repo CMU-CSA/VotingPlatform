@@ -4,6 +4,8 @@ A Raw Voting Platform
 # Source:
 forked from Harry Zeng
 
+UI by Lois Yang
+
 modified by Langxuan Su
 
 # Event involved:
